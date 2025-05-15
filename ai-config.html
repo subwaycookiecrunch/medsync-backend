@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Configuration - MediAlert</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --accent: #e74c3c;
+      --success: #2ecc71;
+      --light: #ecf0f1;
+      --dark: #1a252f;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    header h1 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    header p {
+      color: #7f8c8d;
+    }
+    
+    .ai-config-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .ai-config-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--light);
+      padding-bottom: 1rem;
+    }
+    
+    .ai-config-header i {
+      font-size: 1.5rem;
+      color: var(--secondary);
+    }
+    
+    .ai-config-header h2 {
+      color: var(--primary);
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    
+    .config-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .config-item:last-child {
+      border-bottom: none;
+    }
+    
+    .config-label {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .config-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .config-description {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 30px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--secondary);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+    }
+    
+    .range-slider {
+      width: 100%;
+      margin: 1rem 0;
+    }
+    
+    .range-slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .range-slider-label {
+      font-weight: 600;
+    }
+    
+    .range-slider-value {
+      background-color: var(--secondary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
+    
+    .range-input {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      outline: none;
+    }
+    
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--secondary);
+      cursor: pointer;
+    }
+    
+    .select-control {
+      width: 200px;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: var(--secondary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+    
+    .btn-secondary {
+      background-color: #e0e0e0;
+      color: var(--dark);
+    }
+    
+    .btn-secondary:hover {
+      background-color: #d0d0d0;
+    }
+
+    .ai-status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .ai-status-active {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .ai-status-inactive {
+      background-color: #e0e0e0;
+      color: #777;
+    }
+
+    .ai-module-card {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .ai-module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .ai-module-title {
+      font-weight: 600;
+    }
+
+    .ai-module-description {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin-bottom: 0.5rem;
+    }
+
+    .ai-metrics {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .ai-metric {
+      background-color: white;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      flex: 1;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .ai-metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .ai-metric-label {
+      font-size: 0.8rem;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>MediAlert AI Configuration</h1>
+      <p>Configure advanced AI capabilities and settings</p>
+    </header>
+    
+    <div class="ai-config-card">
+      <div class="ai-config-header">
+        <i class="fas fa-brain"></i>
+        <h2>AI Core Settings</h2>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">AI System Status <span class="ai-status-badge ai-status-active">Active</span></div>
+          <div class="config-description">Enable or disable the AI system completely</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="ai-system-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">AI Processing Location</div>
+          <div class="config-description">Choose where AI processing happens</div>
+        </div>
+        <select class="select-control" id="ai-processing-location">
+          <option value="local">Local (on device)</option>
+          <option value="cloud">Cloud (requires internet)</option>
+          <option value="hybrid" selected>Hybrid (on device + cloud)</option>
+        </select>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">AI Privacy Mode</div>
+          <div class="config-description">Control what data is processed and stored</div>
+        </div>
+        <select class="select-control" id="ai-privacy-mode">
+          <option value="high">High Privacy (minimal data collection)</option>
+          <option value="balanced" selected>Balanced (limited data collection)</option>
+          <option value="performance">Performance (full data collection)</option>
+        </select>
+      </div>
+      
+      <div class="range-slider">
+        <div class="range-slider-header">
+          <span class="range-slider-label">AI Resource Usage</span>
+          <span class="range-slider-value" id="resource-usage-value">50%</span>
+        </div>
+        <input type="range" min="10" max="100" value="50" class="range-input" id="resource-usage">
+      </div>
+    </div>
+    
+    <div class="ai-config-card">
+      <div class="ai-config-header">
+        <i class="fas fa-microphone"></i>
+        <h2>Voice Assistant</h2>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Voice Assistant <span class="ai-status-badge ai-status-active">Active</span></div>
+          <div class="config-description">Enable voice commands and spoken responses</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="voice-assistant-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Trigger Word</div>
+          <div class="config-description">Word to activate voice assistant</div>
+        </div>
+        <select class="select-control" id="trigger-word">
+          <option value="hey-medi" selected>Hey Medi</option>
+          <option value="medical">Medical</option>
+          <option value="assistant">Assistant</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Voice Gender</div>
+          <div class="config-description">Select voice assistant gender</div>
+        </div>
+        <select class="select-control" id="voice-gender">
+          <option value="female" selected>Female</option>
+          <option value="male">Male</option>
+          <option value="neutral">Neutral</option>
+        </select>
+      </div>
+      
+      <div class="range-slider">
+        <div class="range-slider-header">
+          <span class="range-slider-label">Voice Volume</span>
+          <span class="range-slider-value" id="voice-volume-value">70%</span>
+        </div>
+        <input type="range" min="0" max="100" value="70" class="range-input" id="voice-volume">
+      </div>
+      
+      <div class="range-slider">
+        <div class="range-slider-header">
+          <span class="range-slider-label">Voice Speed</span>
+          <span class="range-slider-value" id="voice-speed-value">Normal</span>
+        </div>
+        <input type="range" min="0" max="100" value="50" class="range-input" id="voice-speed">
+      </div>
+    </div>
+    
+    <div class="ai-config-card">
+      <div class="ai-config-header">
+        <i class="fas fa-video"></i>
+        <h2>Vision Monitoring</h2>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Vision Monitoring <span class="ai-status-badge ai-status-inactive">Inactive</span></div>
+          <div class="config-description">Use camera for advanced health monitoring</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="vision-monitoring-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Heart Rate Detection</div>
+          <div class="config-description">Detect heart rate using facial blood flow</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="heart-rate-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Respiration Monitoring</div>
+          <div class="config-description">Monitor breathing rate with computer vision</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="respiration-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Fall Detection</div>
+          <div class="config-description">Detect falls and emergency situations</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="fall-detection-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Medication Adherence</div>
+          <div class="config-description">Detect when medication is taken</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="medication-adherence-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="ai-config-card">
+      <div class="ai-config-header">
+        <i class="fas fa-chart-line"></i>
+        <h2>Predictive Analytics</h2>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Health Predictions <span class="ai-status-badge ai-status-active">Active</span></div>
+          <div class="config-description">Enable AI-powered health predictions</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="predictions-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">Prediction Horizon</div>
+          <div class="config-description">How far into the future to predict</div>
+        </div>
+        <select class="select-control" id="prediction-horizon">
+          <option value="7">7 days</option>
+          <option value="14">14 days</option>
+          <option value="30" selected>30 days</option>
+          <option value="90">90 days</option>
+        </select>
+      </div>
+      
+      <div class="config-item">
+        <div class="config-label">
+          <div class="config-title">AI Model Precision</div>
+          <div class="config-description">Higher precision uses more resources</div>
+        </div>
+        <select class="select-control" id="model-precision">
+          <option value="low">Low (fast, less precise)</option>
+          <option value="medium" selected>Medium (balanced)</option>
+          <option value="high">High (slower, more precise)</option>
+        </select>
+      </div>
+      
+      <div class="ai-module-card">
+        <div class="ai-module-header">
+          <div class="ai-module-title">Model Status</div>
+        </div>
+        <div class="ai-module-description">Currently loaded AI models and their status</div>
+        
+        <div class="ai-metrics">
+          <div class="ai-metric">
+            <div class="ai-metric-value">92%</div>
+            <div class="ai-metric-label">Heart Model Accuracy</div>
+          </div>
+          <div class="ai-metric">
+            <div class="ai-metric-value">89%</div>
+            <div class="ai-metric-label">Respiration Model</div>
+          </div>
+          <div class="ai-metric">
+            <div class="ai-metric-value">94%</div>
+            <div class="ai-metric-label">Medication Model</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button class="btn btn-secondary" id="reset-btn">Reset to Default</button>
+      <button class="btn btn-primary" id="save-btn">Save Settings</button>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Resource usage slider
+      const resourceSlider = document.getElementById('resource-usage');
+      const resourceValue = document.getElementById('resource-usage-value');
+      
+      resourceSlider.addEventListener('input', function() {
+        resourceValue.textContent = `${this.value}%`;
+      });
+      
+      // Voice volume slider
+      const volumeSlider = document.getElementById('voice-volume');
+      const volumeValue = document.getElementById('voice-volume-value');
+      
+      volumeSlider.addEventListener('input', function() {
+        volumeValue.textContent = `${this.value}%`;
+      });
+      
+      // Voice speed slider
+      const speedSlider = document.getElementById('voice-speed');
+      const speedValue = document.getElementById('voice-speed-value');
+      
+      speedSlider.addEventListener('input', function() {
+        const val = parseInt(this.value);
+        let speedText = 'Normal';
+        
+        if (val < 30) speedText = 'Very Slow';
+        else if (val < 45) speedText = 'Slow';
+        else if (val < 55) speedText = 'Normal';
+        else if (val < 75) speedText = 'Fast';
+        else speedText = 'Very Fast';
+        
+        speedValue.textContent = speedText;
+      });
+      
+      // Update status badges when toggles are clicked
+      function updateStatusBadge(toggleId, badgeSelector) {
+        const toggle = document.getElementById(toggleId);
+        const badge = document.querySelector(badgeSelector);
+        
+        if (toggle) {
+          toggle.addEventListener('change', function() {
+            if (this.checked) {
+              badge.textContent = 'Active';
+              badge.className = 'ai-status-badge ai-status-active';
+            } else {
+              badge.textContent = 'Inactive';
+              badge.className = 'ai-status-badge ai-status-inactive';
+            }
+          });
+        }
+      }
+      
+      updateStatusBadge('ai-system-toggle', '.ai-config-header + .config-item .ai-status-badge');
+      updateStatusBadge('voice-assistant-toggle', '.ai-config-header + .config-item .ai-status-badge:nth-of-type(2)');
+      updateStatusBadge('predictions-toggle', '.ai-config-header + .config-item .ai-status-badge:nth-of-type(3)');
+      
+      // Save button functionality
+      const saveBtn = document.getElementById('save-btn');
+      saveBtn.addEventListener('click', function() {
+        // In a real app, this would save to electron-store
+        alert('Settings saved successfully!');
+        
+        // Close window after save (in Electron)
+        if (window.electron) {
+          window.electron.ipc.send('close-window');
+        }
+      });
+      
+      // Reset button functionality
+      const resetBtn = document.getElementById('reset-btn');
+      resetBtn.addEventListener('click', function() {
+        if (confirm('Reset all AI settings to default values?')) {
+          // Reset all toggles to default
+          document.getElementById('ai-system-toggle').checked = true;
+          document.getElementById('voice-assistant-toggle').checked = true;
+          document.getElementById('heart-rate-toggle').checked = true;
+          document.getElementById('respiration-toggle').checked = true;
+          document.getElementById('fall-detection-toggle').checked = true;
+          document.getElementById('medication-adherence-toggle').checked = true;
+          document.getElementById('predictions-toggle').checked = true;
+          
+          // Reset selects to default
+          document.getElementById('ai-processing-location').value = 'hybrid';
+          document.getElementById('ai-privacy-mode').value = 'balanced';
+          document.getElementById('trigger-word').value = 'hey-medi';
+          document.getElementById('voice-gender').value = 'female';
+          document.getElementById('prediction-horizon').value = '30';
+          document.getElementById('model-precision').value = 'medium';
+          
+          // Reset sliders to default
+          document.getElementById('resource-usage').value = 50;
+          document.getElementById('voice-volume').value = 70;
+          document.getElementById('voice-speed').value = 50;
+          
+          // Update displayed values
+          resourceValue.textContent = '50%';
+          volumeValue.textContent = '70%';
+          speedValue.textContent = 'Normal';
+          
+          // Update badges
+          const badges = document.querySelectorAll('.ai-status-badge');
+          badges.forEach(badge => {
+            badge.textContent = 'Active';
+            badge.className = 'ai-status-badge ai-status-active';
+          });
+          
+          // Just the vision badge should be inactive
+          const visionBadge = document.querySelector('.ai-config-header + .config-item .ai-status-badge:nth-of-type(1)');
+          if (visionBadge) {
+            visionBadge.textContent = 'Inactive';
+            visionBadge.className = 'ai-status-badge ai-status-inactive';
+          }
+        }
+      });
+    });
+  </script>
+  
+  <script src="renderer.js"></script>
+</body>
+</html> 

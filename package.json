@@ -1,0 +1,72 @@
+{
+  "name": "medsync",
+  "productName": "MedSync",
+  "version": "1.1.0",
+  "description": "AI-powered healthcare monitoring system",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "web": "http-server -p 3000",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "postinstall": "node update-html.js",
+    "prepare": "node update-html.js",
+    "first-run": "node platform-config.js"
+  },
+  "build": {
+    "appId": "com.medsync.app",
+    "productName": "MedSync",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/.{idea,git,cache,github,vscode}",
+      "!**/{.DS_Store,Thumbs.db}"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icons/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icons/icon.png"
+    }
+  },
+  "author": "MedSync Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^26.0.0",
+    "electron-builder": "^24.6.3",
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "@tensorflow-models/coco-ssd": "^2.2.2",
+    "@tensorflow/tfjs": "^4.10.0",
+    "chart.js": "^3.9.1",
+    "electron-store": "^8.1.0",
+    "express": "^4.18.2",
+    "node-microphone": "^0.1.6",
+    "openai": "^4.0.0",
+    "puppeteer": "^19.7.1",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "tesseract.js": "^4.1.1"
+  },
+  "optionalDependencies": {
+    "@tensorflow-models/face-landmarks-detection": "^1.0.5",
+    "@tensorflow-models/speech-commands": "^0.5.4"
+  }
+}

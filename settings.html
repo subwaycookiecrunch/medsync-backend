@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - MediAlert</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --accent: #e74c3c;
+      --success: #2ecc71;
+      --light: #ecf0f1;
+      --dark: #1a252f;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      padding: 20px;
+    }
+    
+    .settings-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    
+    .settings-header {
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .settings-header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    
+    .settings-body {
+      padding: 20px;
+    }
+    
+    .settings-tabs {
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+    
+    .settings-tab {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #7f8c8d;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .settings-tab.active {
+      color: var(--secondary);
+      border-bottom: 3px solid var(--secondary);
+    }
+    
+    .settings-tab:hover:not(.active) {
+      color: var(--primary);
+      border-bottom: 3px solid #e0e0e0;
+    }
+    
+    .settings-content {
+      display: none;
+    }
+    
+    .settings-content.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .settings-section {
+      margin-bottom: 30px;
+    }
+    
+    .settings-section h2 {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .settings-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .settings-option:last-child {
+      border-bottom: none;
+    }
+    
+    .settings-option-label {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .settings-option-title {
+      font-weight: 500;
+      color: var(--primary);
+    }
+    
+    .settings-option-description {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--secondary);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    .settings-input {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .settings-select {
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      background-color: white;
+      min-width: 150px;
+    }
+    
+    .settings-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .settings-button {
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border: none;
+    }
+    
+    .cancel-button {
+      background-color: #f1f1f1;
+      color: var(--primary);
+    }
+    
+    .save-button {
+      background-color: var(--secondary);
+      color: white;
+    }
+    
+    .cancel-button:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .save-button:hover {
+      background-color: #2980b9;
+    }
+    
+    .system-info {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .system-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .system-info-item:last-child {
+      border-bottom: none;
+    }
+    
+    .system-info-label {
+      font-weight: 500;
+      color: var(--primary);
+    }
+    
+    .system-info-value {
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-container">
+    <div class="settings-header">
+      <i class="fas fa-cog"></i>
+      <h1>MediAlert Settings</h1>
+    </div>
+    
+    <div class="settings-body">
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="general">General</button>
+        <button class="settings-tab" data-tab="notifications">Notifications</button>
+        <button class="settings-tab" data-tab="ai">AI Features</button>
+        <button class="settings-tab" data-tab="data">Data Management</button>
+        <button class="settings-tab" data-tab="about">About</button>
+      </div>
+      
+      <!-- General Settings -->
+      <div id="general-tab" class="settings-content active">
+        <div class="settings-section">
+          <h2>Application</h2>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Launch on startup</div>
+              <div class="settings-option-description">Start MediAlert when your computer starts</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="launch-startup">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Minimize to system tray</div>
+              <div class="settings-option-description">Keep MediAlert running in the background when closed</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="minimize-tray" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Theme</div>
+              <div class="settings-option-description">Choose the application theme</div>
+            </div>
+            <select class="settings-select" id="app-theme">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="system">Use system setting</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h2>Updates</h2>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Automatic updates</div>
+              <div class="settings-option-description">Automatically download and install updates</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="auto-updates" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Check for updates</div>
+              <div class="settings-option-description">Frequency for checking new updates</div>
+            </div>
+            <select class="settings-select" id="update-frequency">
+              <option value="daily">Daily</option>
+              <option value="weekly" selected>Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Notifications Settings -->
+      <div id="notifications-tab" class="settings-content">
+        <div class="settings-section">
+          <h2>Alerts & Notifications</h2>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Desktop notifications</div>
+              <div class="settings-option-description">Show system notifications for important alerts</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="desktop-notifications" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Sound alerts</div>
+              <div class="settings-option-description">Play sound when critical alerts occur</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="sound-alerts" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Notification priority</div>
+              <div class="settings-option-description">Minimum importance level for notifications</div>
+            </div>
+            <select class="settings-select" id="notification-priority">
+              <option value="all">All notifications</option>
+              <option value="important" selected>Important only</option>
+              <option value="critical">Critical only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- AI Settings -->
+      <div id="ai-tab" class="settings-content">
+        <div class="settings-section">
+          <h2>AI Analysis Features</h2>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Nutrient monitoring</div>
+              <div class="settings-option-description">AI-powered analysis of patient nutrition</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="ai-nutrient" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Health pattern detection</div>
+              <div class="settings-option-description">Detect unusual patterns in health metrics</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="ai-patterns" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Predictive analytics</div>
+              <div class="settings-option-description">Use AI to predict potential health issues</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="ai-predictive" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">AI sensitivity</div>
+              <div class="settings-option-description">Adjust the sensitivity of AI detection</div>
+            </div>
+            <select class="settings-select" id="ai-sensitivity">
+              <option value="low">Low (fewer alerts)</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High (more alerts)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Data Management Settings -->
+      <div id="data-tab" class="settings-content">
+        <div class="settings-section">
+          <h2>Data Storage</h2>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Data storage location</div>
+              <div class="settings-option-description">Where patient data is stored</div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="text" class="settings-input" id="data-location" value="C:\Users\AppData\Roaming\MediAlert\database" style="width: 300px" readonly>
+              <button class="settings-button" style="padding: 8px 12px;">Browse</button>
+            </div>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Data retention period</div>
+              <div class="settings-option-description">How long to keep historical data</div>
+            </div>
+            <select class="settings-select" id="data-retention">
+              <option value="6months">6 months</option>
+              <option value="1year" selected>1 year</option>
+              <option value="2years">2 years</option>
+              <option value="forever">Indefinitely</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <h2>Data Management</h2>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Automatic backups</div>
+              <div class="settings-option-description">Regularly backup your data</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="auto-backup" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="settings-option">
+            <div class="settings-option-label">
+              <div class="settings-option-title">Backup frequency</div>
+              <div class="settings-option-description">How often to create backups</div>
+            </div>
+            <select class="settings-select" id="backup-frequency">
+              <option value="daily">Daily</option>
+              <option value="weekly" selected>Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+          
+          <div class="settings-option" style="justify-content: flex-start; gap: 20px;">
+            <button class="settings-button" style="background-color: var(--primary); color: white;">Backup Now</button>
+            <button class="settings-button" style="background-color: var(--secondary); color: white;">Restore from Backup</button>
+            <button class="settings-button" style="background-color: var(--accent); color: white;">Clear All Data</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- About Tab -->
+      <div id="about-tab" class="settings-content">
+        <div class="settings-section">
+          <h2>About MediAlert</h2>
+          
+          <div style="text-align: center; margin: 20px 0;">
+            <i class="fas fa-heartbeat" style="font-size: 3rem; color: var(--accent); margin-bottom: 10px;"></i>
+            <h2 style="color: var(--primary); margin-bottom: 5px;">MediAlert v1.0.0</h2>
+            <p style="color: #7f8c8d;">AI-powered healthcare monitoring system</p>
+          </div>
+          
+          <div class="system-info">
+            <div class="system-info-item">
+              <div class="system-info-label">Platform</div>
+              <div class="system-info-value" id="system-platform">Windows 10</div>
+            </div>
+            <div class="system-info-item">
+              <div class="system-info-label">Architecture</div>
+              <div class="system-info-value" id="system-arch">x64</div>
+            </div>
+            <div class="system-info-item">
+              <div class="system-info-label">Electron Version</div>
+              <div class="system-info-value" id="electron-version">26.0.0</div>
+            </div>
+            <div class="system-info-item">
+              <div class="system-info-label">Memory</div>
+              <div class="system-info-value" id="system-memory">16 GB</div>
+            </div>
+            <div class="system-info-item">
+              <div class="system-info-label">CPU Cores</div>
+              <div class="system-info-value" id="system-cpu">8</div>
+            </div>
+          </div>
+          
+          <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #7f8c8d; margin-bottom: 10px;">© 2025 MediAlert Team. All rights reserved.</p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+              <button class="settings-button" style="background-color: var(--primary); color: white;">Privacy Policy</button>
+              <button class="settings-button" style="background-color: var(--primary); color: white;">Check for Updates</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="settings-actions">
+        <button class="settings-button cancel-button" id="cancel-btn">Cancel</button>
+        <button class="settings-button save-button" id="save-btn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.settings-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Get tab content ID from data attribute
+        const tabId = tab.getAttribute('data-tab');
+        
+        // Hide all tab contents
+        document.querySelectorAll('.settings-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        document.getElementById(tabId + '-tab').classList.add('active');
+      });
+    });
+    
+    // Close window buttons
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      window.close();
+    });
+    
+    document.getElementById('save-btn').addEventListener('click', () => {
+      // Save settings logic would go here
+      alert('Settings saved successfully!');
+      window.close();
+    });
+    
+    // Populate system info from electron API
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.electron) {
+        document.getElementById('system-platform').textContent = window.electron.system.os();
+        document.getElementById('system-arch').textContent = window.electron.system.arch();
+        document.getElementById('electron-version').textContent = window.electron.system.version();
+        document.getElementById('system-memory').textContent = window.electron.system.memory() + ' GB';
+        document.getElementById('system-cpu').textContent = window.electron.system.cpuCores();
+        
+        // Get data path for storage location
+        window.electron.files.getAppPath().then(path => {
+          document.getElementById('data-location').value = path + '\\database';
+        });
+      }
+    });
+  </script>
+
+  <script src="renderer.js"></script>
+  </body>
+</html> 

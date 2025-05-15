@@ -1,0 +1,3 @@
+@echo off
+echo Starting MedSync Healthcare Application...
+powershell.exe -ExecutionPolicy Bypass -File "%~dp0Start-MediAlert.ps1" 
